@@ -2,4 +2,9 @@
 
 How about a daily printed newspaper, govna?
 
-Yes.
+
+## References
+
+* feedparser
+* email
+* python-pdf
