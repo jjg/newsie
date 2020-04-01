@@ -1,4 +1,6 @@
+import os
 import smtplib
+import glob 
 
 import feedparser
 import pydf
@@ -17,7 +19,7 @@ rssfeed = "https://feeds.bbci.co.uk/news/rss.xml"
 # TODO: Load multiple feeds
 feed = feedparser.parse(rssfeed)
 
-# TODO: Filter articles more than 24 hours old
+# TODO: Filter articles more than 24 hours old (entry["published"])
 # TODO: Filter through subscriber blacklist
 # TODO: Randomly select enough to fill 2 pages
 
@@ -34,15 +36,16 @@ for entry in feed.entries:
     # Insert summary
     newspaper_html += f"<p>{entry['summary']}</p>"
 
+    # TODO: Consider grabbing more of the article if the summary is short.
+
     # Insert QR code link to source
-    # TODO: These are way too big, figure out how to shrink them
     qr_link = qrcode.QRCode(
-            version = 1,
-            box_size = 10,
+            version = 10,
+            box_size = 1,
             border = 4,
             )
-    qr_link.add_data("https://jasongullickson.com")
-    qr_link.make(fit=True)
+    qr_link.add_data(entry["link"])
+    qr_link.make(fit=False)
     qr_link_img = qr_link.make_image(fill_color="black",back_color="white")
     qr_link_img.save(f"./img/{entry_idx}.jpg", "JPEG")
 
@@ -52,15 +55,8 @@ for entry in feed.entries:
 
     entry_idx = entry_idx + 1
 
-# DEBUG
-print(newspaper_html)
-
 # Create new PDF
 newspaper_pdf = pydf.generate_pdf(newspaper_html)
-
-# DEBUG: Write to filesystem
-#with open("newspaper.pdf","wb") as f:
-#    f.write(newspaper_pdf)
 
 # Send to printer
 message = EmailMessage()
@@ -75,3 +71,7 @@ smtp.starttls()
 smtp.login(config["email"], config["password"])
 smtp.send_message(message)
 smtp.quit()
+
+# Clean-up temp files
+for f in glob.glob("./img/*"):
+    os.remove(f)
