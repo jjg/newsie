@@ -1,5 +1,7 @@
-import pydf
 import smtplib
+
+import feedparser
+import pydf
 
 from email.message import EmailMessage
 
@@ -8,19 +10,29 @@ from config import config
 # TODO: Load subscriber from some datasource
 subscriber_printer_email = config["debug_email"]
 subscriber_blacklist = ""
+rssfeed = "https://feeds.bbci.co.uk/news/rss.xml"
 
+# Load RSS feed
+# TODO: Load multiple feeds
+feed = feedparser.parse(rssfeed)
 
-# TODO: Load a list of RSS feeds
-# TODO: Fetch articles from the last 24 hours
+# TODO: Filter articles more than 24 hours old
 # TODO: Filter through subscriber blacklist
 # TODO: Randomly select enough to fill 2 pages
 
 # Render each article into html
 newspaper_html = "<h1>The Daily Facto</h1>"
 
-# TODO: Insert headline
-# TODO: Insert summary
-# TODO: Insert QR code link to source
+for entry in feed.entries:
+
+    # Insert headline
+    newspaper_html += "<hr>"
+    newspaper_html += f"<h2>{entry['title']}</h2>"
+    
+    # Insert summary
+    newspaper_html += f"<p>{entry['summary']}</p>"
+
+    # TODO: Insert QR code link to source
 
 # Create new PDF
 newspaper_pdf = pydf.generate_pdf(newspaper_html)
