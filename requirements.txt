@@ -1,3 +1,6 @@
 feedparser==5.2.1
+Pillow==7.0.0
 pkg-resources==0.0.0
 python-pdf==0.37
+qrcode==6.1
+six==1.14.0

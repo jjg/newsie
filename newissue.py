@@ -2,6 +2,7 @@ import smtplib
 
 import feedparser
 import pydf
+import qrcode
 
 from email.message import EmailMessage
 
@@ -23,6 +24,7 @@ feed = feedparser.parse(rssfeed)
 # Render each article into html
 newspaper_html = "<h1>The Daily Facto</h1>"
 
+entry_idx = 0
 for entry in feed.entries:
 
     # Insert headline
@@ -32,7 +34,26 @@ for entry in feed.entries:
     # Insert summary
     newspaper_html += f"<p>{entry['summary']}</p>"
 
-    # TODO: Insert QR code link to source
+    # Insert QR code link to source
+    # TODO: These are way too big, figure out how to shrink them
+    qr_link = qrcode.QRCode(
+            version = 1,
+            box_size = 10,
+            border = 4,
+            )
+    qr_link.add_data("https://jasongullickson.com")
+    qr_link.make(fit=True)
+    qr_link_img = qr_link.make_image(fill_color="black",back_color="white")
+    qr_link_img.save(f"./img/{entry_idx}.jpg", "JPEG")
+
+    # TODO: Full path required here, but find a way to 
+    # avoid hard-coding it.
+    newspaper_html += f"<img src='/home/jason/Development/paperboy/img/{entry_idx}.jpg'>"
+
+    entry_idx = entry_idx + 1
+
+# DEBUG
+print(newspaper_html)
 
 # Create new PDF
 newspaper_pdf = pydf.generate_pdf(newspaper_html)
