@@ -19,9 +19,7 @@ subscriber_feeds = [
         ]
 
 # Render each article into html
-# TODO: Apply style to html
-#newspaper_html = "<h1>The Daily Facto</h1>"
-newspaper_body = ""
+column_text = ["",""]
 
 for feed_url in subscriber_feeds:
 
@@ -37,6 +35,8 @@ for feed_url in subscriber_feeds:
     for entry in feed.entries:
 
         # Insert headline
+        # TODO: Replace this variable with a better name
+        newspaper_body = ""
         newspaper_body += "<br>"
         newspaper_body += f"<b>{entry['title']}</b>"
         
@@ -58,36 +58,21 @@ for feed_url in subscriber_feeds:
 
         # TODO: Full path required here, but find a way to 
         # avoid hard-coding it.
+        # TODO: Align this better, perhaps alternate left/right?
         newspaper_body += f"<img src='/home/jason/Development/paperboy/img/{entry_idx}.jpg'>"
+
+        column_text[(entry_idx % 2)] += newspaper_body
 
         entry_idx = entry_idx + 1
 
-paper_title = "Daily Paperboy"
-publication_date = "Monday, April 1st 2020"
+# TODO: Make this part of the config
+paper_title = "The Cyber Gazzette"
+
 newspaper_html = f"""
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>{paper_title}</title>
-        <meta charset='utf-8'>
-        <meta name="viewport" content="width=1024px; initial-scale=1.0;">
-        <link rel="stylesheet" href="/home/jason/Development/paperboy/css/reset.css" media="all" />
-        <link rel="stylesheet" href="/home/jason/Development/paperboy/css/multi-col.css" media="all" />
-    </head>
-    <body>
-        <section>
-            <header>
-                <h1><span>{publication_date}</span>{paper_title}</h1>
-                <h2><span>something?</span></h2>
-            </header>
-
-            <article class="cols">
-                {newspaper_body}
-            </article>
-
-        </section>
-    </body>
-</html>
+<table width=100% border=0>
+   <tr><th colspan=2>{paper_title}</th></tr>
+   <tr><td>{column_text[0]}</td><td>{column_text[1]}</td></tr>
+</table>
 """
 
 # Create new PDF
