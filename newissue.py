@@ -14,7 +14,6 @@ from config import config
 subscriber_printer_email = config["debug_email"]
 subscriber_blacklist = ""
 subscriber_feeds = [
-        "https://feeds.bbci.co.uk/news/rss.xml",
         "https://hackaday.com/feed",
         ]
 
@@ -37,11 +36,8 @@ for feed_url in subscriber_feeds:
         # Insert headline
         # TODO: Replace this variable with a better name
         newspaper_body = ""
-        newspaper_body += "<br>"
-        newspaper_body += f"<b>{entry['title']}</b>"
+        newspaper_body += f"<h2>{entry['title']}</h2>"
         
-        # Insert summary
-        newspaper_body += f"<p>{entry['summary']}</p>"
 
         # TODO: Consider grabbing more of the article if the summary is short.
 
@@ -59,7 +55,10 @@ for feed_url in subscriber_feeds:
         # TODO: Full path required here, but find a way to 
         # avoid hard-coding it.
         # TODO: Align this better, perhaps alternate left/right?
-        newspaper_body += f"<img src='/home/jason/Development/paperboy/img/{entry_idx}.jpg'>"
+        newspaper_body += f"<img align='left' src='/home/jason/Development/paperboy/img/{entry_idx}.jpg'>"
+
+        # Insert summary
+        newspaper_body += f"<p>{entry['summary']}</p>"
 
         column_text[(entry_idx % 2)] += newspaper_body
 
@@ -70,7 +69,7 @@ paper_title = "The Cyber Gazzette"
 
 newspaper_html = f"""
 <table width=100% border=0>
-   <tr><th colspan=2>{paper_title}</th></tr>
+   <tr><th colspan=2><h1>{paper_title}</h1></th></tr>
    <tr><td>{column_text[0]}</td><td>{column_text[1]}</td></tr>
 </table>
 """
