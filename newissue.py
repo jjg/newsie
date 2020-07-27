@@ -1,6 +1,7 @@
 import os
 import smtplib
 import glob 
+import re
 
 import feedparser
 import pydf
@@ -12,12 +13,19 @@ from datetime import datetime, timedelta, timezone
 
 import config
 
+# This gets rid of most HTML w/o resorting to BeautifulSoup (which we might do at some point)
+def clean_html(s):
+    cleanr = re.compile('<.*?>')
+    clean_text = re.sub(cleanr, '', s)
+    return clean_text
+
 # TODO: Load subscriber from some datasource
 subscriber_printer_email = config.debug_email
 subscriber_blocklist = set(["coronavirus", "coronavirus:", "trump"])
 subscriber_feeds = [
         "https://hackaday.com/feed",
         "http://feeds.bbci.co.uk/news/rss.xml",
+        "https://blog.adafruit.com/feed",
         ]
 
 articles = []
@@ -56,11 +64,8 @@ for feed_url in subscriber_feeds:
 articles.sort(key=lambda x: x.published_parsed, reverse=False)
 
 article_idx = 0
-# TODO: Select enough articles to fill 2 pages instead of just grabbing 10
-for article in articles[-10:]:
-
-    # DEBUG
-    print(f"{article['published']} - {article['title']}")
+# TODO: Select enough articles to fill 2 pages instead of just grabbing a fixed number 
+for article in articles[-20:]:
 
     # Insert headline
     # TODO: Replace this variable with a better name
@@ -86,7 +91,7 @@ for article in articles[-10:]:
     newspaper_body += f"<img align='left' src='/home/jason/Development/paperboy/img/{article_idx}.jpg'>"
 
     # Insert summary
-    newspaper_body += f"<p>{article['summary']}</p>"
+    newspaper_body += f"<p>{clean_html(article['summary'])}</p>"
 
     column_text[(article_idx % 2)] += newspaper_body
 
