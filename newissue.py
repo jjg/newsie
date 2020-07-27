@@ -82,6 +82,7 @@ message = EmailMessage()
 message["Subject"] = "Extree! Extree!"
 message["From"] = config["email"]
 message["To"] = subscriber_printer_email
+message.set_content("Latest edition attached!")
 message.add_attachment(newspaper_pdf, maintype="application/pdf", subtype="pdf")
 
 smtp = smtplib.SMTP(f"{config['smtp_server']}:{config['smtp_port']}")
