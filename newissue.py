@@ -133,9 +133,7 @@ if config.print_direct:
         pf.write(newspaper_pdf)
 
     conn = cups.Connection()
-
-    # TODO: Figure out what all these parameters do
-    conn.printFile(config.printer_name, pdf_file, " ", { "page-left":"30", "cpi":"12", }) 
+    conn.printFile(config.printer_name, pdf_file, " ", { "page-left":"30", "cpi":"12", "sides":"two-sided-long-edge", }) 
 
 # Clean-up temp files
 for f in glob.glob("./img/*"):
