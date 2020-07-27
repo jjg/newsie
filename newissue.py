@@ -8,15 +8,19 @@ import qrcode
 import cups
 
 from email.message import EmailMessage
+from datetime import datetime, timedelta, timezone
 
 import config
 
 # TODO: Load subscriber from some datasource
 subscriber_printer_email = config.debug_email
-subscriber_blocklist = ""
+subscriber_blocklist = set(["coronavirus", "coronavirus:", "trump"])
 subscriber_feeds = [
         "https://hackaday.com/feed",
+        "http://feeds.bbci.co.uk/news/rss.xml",
         ]
+
+articles = []
 
 # Render each article into html
 column_text = ["",""]
@@ -26,43 +30,68 @@ for feed_url in subscriber_feeds:
     # Load RSS feed
     feed = feedparser.parse(feed_url)
 
-    # TODO: Filter articles more than 24 hours old (entry["published"])
-    # TODO: Filter through subscriber blocklist
-    # TODO: Strip html, hyperlinks, etc.
-    # TODO: Randomly select enough to fill 2 pages
+    for article in feed.entries:
+        yesterday = datetime.now(timezone.utc) - timedelta(days=1)
 
-    entry_idx = 0
-    for entry in feed.entries:
+        # Different feeds specify the TZ with different formats.  This is an attempt
+        # to handle that; it's awkward but will do until we find something better
+        try:
+            article.published_parsed = datetime.strptime(article["published"], "%a, %d %b %Y %H:%M:%S %z")
+        except ValueError:
+            # Thanks to a bug in strptime (https://bugs.python.org/issue22377), we have to force the TZ on these
+            article.published_parsed= datetime.strptime(article["published"], "%a, %d %b %Y %H:%M:%S %Z").replace(tzinfo=timezone.utc)
 
-        # Insert headline
-        # TODO: Replace this variable with a better name
-        newspaper_body = ""
-        newspaper_body += f"<h2>{entry['title']}</h2>"
+        if article.published_parsed > yesterday:
 
-        # TODO: Consider grabbing more of the article if the summary is short.
+            # TODO: Strip html, hyperlinks, etc.
+            # Filter out articles containingi keywords the user doesn't want to see
+            title_set = set(article["title"].lower().split())
+            if subscriber_blocklist.intersection(title_set):
+                print(f"blocked: {subscriber_blocklist.intersection(title_set)} {article['title']}")
+            else:
+                print(f"added: {article['title']}")
+                articles.append(article)
 
-        # Insert QR code link to source
-        qr_link = qrcode.QRCode(
-                version = 10,
-                box_size = 1,
-                border = 4,
-                )
-        qr_link.add_data(entry["link"])
-        qr_link.make(fit=False)
-        qr_link_img = qr_link.make_image(fill_color="black",back_color="white")
-        qr_link_img.save(f"./img/{entry_idx}.jpg", "JPEG")
+# Sort articles by (parsed) publication date
+articles.sort(key=lambda x: x.published_parsed, reverse=False)
 
-        # TODO: Full path required here, but find a way to 
-        # avoid hard-coding it.
-        # TODO: Align this better, perhaps alternate left/right?
-        newspaper_body += f"<img align='left' src='/home/jason/Development/paperboy/img/{entry_idx}.jpg'>"
+article_idx = 0
+# TODO: Select enough articles to fill 2 pages instead of just grabbing 10
+for article in articles[-10:]:
 
-        # Insert summary
-        newspaper_body += f"<p>{entry['summary']}</p>"
+    # DEBUG
+    print(f"{article['published']} - {article['title']}")
 
-        column_text[(entry_idx % 2)] += newspaper_body
+    # Insert headline
+    # TODO: Replace this variable with a better name
+    newspaper_body = ""
+    newspaper_body += f"<h2>{article['title']}</h2>"
 
-        entry_idx = entry_idx + 1
+    # TODO: Consider grabbing more of the article if the summary is short.
+
+    # Insert QR code link to source
+    qr_link = qrcode.QRCode(
+            version = 10,
+            box_size = 1,
+            border = 4,
+            )
+    qr_link.add_data(article["link"])
+    qr_link.make(fit=False)
+    qr_link_img = qr_link.make_image(fill_color="black",back_color="white")
+    qr_link_img.save(f"./img/{article_idx}.jpg", "JPEG")
+
+    # TODO: Full path required here, but find a way to 
+    # avoid hard-coding it.
+    # TODO: Align this better, perhaps alternate left/right?
+    newspaper_body += f"<img align='left' src='/home/jason/Development/paperboy/img/{article_idx}.jpg'>"
+
+    # Insert summary
+    newspaper_body += f"<p>{article['summary']}</p>"
+
+    column_text[(article_idx % 2)] += newspaper_body
+
+    article_idx = article_idx + 1
+
 
 # TODO: Make this part of the config
 paper_title = "The Cyber Gazzette"
