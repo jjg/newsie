@@ -10,7 +10,7 @@ Paperboy delivers a fresh hard-copy newspaper via your printer every morning bas
 
 ## Status
 
-  * Generates a page of news from a hard-coded list of RSS feeds
+  * Generates a page of news from a list of RSS feeds
   * Can print the page directly to CUPS-configured printer
   * Emails the page to a configured destination
   * Block stories based on keywords
@@ -23,5 +23,5 @@ Paperboy delivers a fresh hard-copy newspaper via your printer every morning bas
   * ~~Blend stories so they don't appear grouped by source~~
   * ~~Only include stories from the last 24 hours (or some configured amount)~~
   * Grab more of the article if the RSS `summary` is too short
-  * Figure out why iOS won't parse the QR code links
+  * ~~Figure out why iOS won't parse the QR code links~~
 
