@@ -12,7 +12,7 @@ from config import config
 
 # TODO: Load subscriber from some datasource
 subscriber_printer_email = config["debug_email"]
-subscriber_blacklist = ""
+subscriber_blocklist = ""
 subscriber_feeds = [
         "https://hackaday.com/feed",
         ]
@@ -26,7 +26,7 @@ for feed_url in subscriber_feeds:
     feed = feedparser.parse(feed_url)
 
     # TODO: Filter articles more than 24 hours old (entry["published"])
-    # TODO: Filter through subscriber blacklist
+    # TODO: Filter through subscriber blocklist
     # TODO: Strip html, hyperlinks, etc.
     # TODO: Randomly select enough to fill 2 pages
 
