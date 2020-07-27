@@ -5,13 +5,14 @@ import glob
 import feedparser
 import pydf
 import qrcode
+import cups
 
 from email.message import EmailMessage
 
-from config import config
+import config
 
 # TODO: Load subscriber from some datasource
-subscriber_printer_email = config["debug_email"]
+subscriber_printer_email = config.debug_email
 subscriber_blocklist = ""
 subscriber_feeds = [
         "https://hackaday.com/feed",
@@ -37,7 +38,6 @@ for feed_url in subscriber_feeds:
         # TODO: Replace this variable with a better name
         newspaper_body = ""
         newspaper_body += f"<h2>{entry['title']}</h2>"
-        
 
         # TODO: Consider grabbing more of the article if the summary is short.
 
@@ -77,20 +77,31 @@ newspaper_html = f"""
 # Create new PDF
 newspaper_pdf = pydf.generate_pdf(newspaper_html)
 
-# Send to printer
+# Send to printer via email
 message = EmailMessage()
 message["Subject"] = "Extree! Extree!"
-message["From"] = config["email"]
+message["From"] = config.email
 message["To"] = subscriber_printer_email
 message.set_content("Latest edition attached!")
 message.add_attachment(newspaper_pdf, maintype="application/pdf", subtype="pdf")
 
-smtp = smtplib.SMTP(f"{config['smtp_server']}:{config['smtp_port']}")
+smtp = smtplib.SMTP(f"{config.smtp_server}:{config.smtp_port}")
 smtp.ehlo()
 smtp.starttls()
-smtp.login(config["email"], config["password"])
+smtp.login(config.email, config.password)
 smtp.send_message(message)
 smtp.quit()
+
+# Print directly to the printer with CUPS
+if config.print_direct:
+    pdf_file = "./img/issue.pdf"
+    with open(pdf_file, "wb") as pf:
+        pf.write(newspaper_pdf)
+
+    conn = cups.Connection()
+
+    # TODO: Figure out what all these parameters do
+    conn.printFile(config.printer_name, pdf_file, " ", { "page-left":"30", "cpi":"12", }) 
 
 # Clean-up temp files
 for f in glob.glob("./img/*"):
