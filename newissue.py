@@ -20,20 +20,21 @@ def clean_html(s):
     return clean_text
 
 # TODO: Load subscriber from some datasource
-subscriber_printer_email = config.debug_email
-subscriber_blocklist = set(["coronavirus", "coronavirus:", "trump"])
-subscriber_feeds = [
-        "https://hackaday.com/feed",
-        "http://feeds.bbci.co.uk/news/rss.xml",
-        "https://blog.adafruit.com/feed",
-        ]
+#subscriber_printer_email = config.subscriber_email
+#subscriber_blocklist = set(["coronavirus", "coronavirus:", "trump"])
+#subscriber_feeds = [
+#        "https://hackaday.com/feed",
+#        "http://feeds.bbci.co.uk/news/rss.xml",
+#        "https://blog.adafruit.com/feed",
+#        "https://feeds.npr.org/1001/rss.xml",
+#        ]
 
 articles = []
 
 # Render each article into html
 column_text = ["",""]
 
-for feed_url in subscriber_feeds:
+for feed_url in config.subscriber_feeds:
 
     # Load RSS feed
     feed = feedparser.parse(feed_url)
@@ -54,8 +55,8 @@ for feed_url in subscriber_feeds:
             # TODO: Strip html, hyperlinks, etc.
             # Filter out articles containingi keywords the user doesn't want to see
             title_set = set(article["title"].lower().split())
-            if subscriber_blocklist.intersection(title_set):
-                print(f"blocked: {subscriber_blocklist.intersection(title_set)} {article['title']}")
+            if config.subscriber_blocklist.intersection(title_set):
+                print(f"blocked: {config.subscriber_blocklist.intersection(title_set)} {article['title']}")
             else:
                 print(f"added: {article['title']}")
                 articles.append(article)
@@ -115,7 +116,7 @@ newspaper_pdf = pydf.generate_pdf(newspaper_html)
 message = EmailMessage()
 message["Subject"] = "Extree! Extree!"
 message["From"] = config.email
-message["To"] = subscriber_printer_email
+message["To"] = config.subscriber_email
 message.set_content("Latest edition attached!")
 message.add_attachment(newspaper_pdf, maintype="application/pdf", subtype="pdf")
 
