@@ -34,3 +34,7 @@ This won't work on non-x86 systems because the pypdf (python-pdf) module contain
 You may have to do this to get `pip` to install the dependencies:
 
 `sudo apt install libjpeg-dev zlib1g-dev libcups2-dev`
+
+Attempting to use latex, you'll need this:
+
+`sudo apt-get install texlive-pictures texlive-science texlive-latex-extra latexmk`
