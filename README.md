@@ -15,6 +15,7 @@ Paperboy delivers a fresh hard-copy newspaper via your printer every morning bas
   * Emails the page to a configured destination
   * Blocks stories based on keywords
 
+
 ## TODO
 
   * ~~Make the feed list dynamic (part of the config)~~
@@ -25,3 +26,11 @@ Paperboy delivers a fresh hard-copy newspaper via your printer every morning bas
   * Grab more of the article if the RSS `summary` is too short
   * ~~Figure out why iOS won't parse the QR code links~~
 
+
+## Notes
+
+This won't work on non-x86 systems because the pypdf (python-pdf) module contains binaries for x86.  This is a bummer, so I'm looking for an alternative.
+
+You may have to do this to get `pip` to install the dependencies:
+
+`sudo apt install libjpeg-dev zlib1g-dev libcups2-dev`

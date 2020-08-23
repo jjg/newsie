@@ -19,16 +19,38 @@ def clean_html(s):
     clean_text = re.sub(cleanr, '', s)
     return clean_text
 
-# TODO: Load subscriber from some datasource
-#subscriber_printer_email = config.subscriber_email
-#subscriber_blocklist = set(["coronavirus", "coronavirus:", "trump"])
-#subscriber_feeds = [
-#        "https://hackaday.com/feed",
-#        "http://feeds.bbci.co.uk/news/rss.xml",
-#        "https://blog.adafruit.com/feed",
-#        "https://feeds.npr.org/1001/rss.xml",
-#        ]
+def send_to_email(newspaper_pdf):
+    # Send via email
+    message = EmailMessage()
+    message["Subject"] = "Extree! Extree!"
+    message["From"] = config.email
+    message["To"] = config.subscriber_email
+    message.set_content("Latest edition attached!")
+    message.add_attachment(newspaper_pdf, maintype="application/pdf", subtype="pdf")
 
+    smtp = smtplib.SMTP(f"{config.smtp_server}:{config.smtp_port}")
+    smtp.ehlo()
+    smtp.starttls()
+    smtp.login(config.email, config.password)
+    smtp.send_message(message)
+    smtp.quit()
+
+def send_to_printer(newspaper_pdf):
+    # Print directly to the printer with CUPS
+    if config.print_direct:
+        pdf_file = "./img/issue.pdf"
+        with open(pdf_file, "wb") as pf:
+            pf.write(newspaper_pdf)
+
+        conn = cups.Connection()
+        conn.printFile(config.printer_name, pdf_file, " ", {"sides":"two-sided-long-edge", "fit-to-page":"1"}) 
+
+    # Clean-up temp files
+    for f in glob.glob("./img/*"):
+        os.remove(f)
+
+
+# Build a list of articles
 articles = []
 
 # Render each article into html
@@ -52,8 +74,7 @@ for feed_url in config.subscriber_feeds:
 
         if article.published_parsed > yesterday:
 
-            # TODO: Strip html, hyperlinks, etc.
-            # Filter out articles containingi keywords the user doesn't want to see
+            # Filter out articles containing keywords the user doesn't want to see
             title_set = set(article["title"].lower().split())
             if config.subscriber_blocklist.intersection(title_set):
                 print(f"blocked: {config.subscriber_blocklist.intersection(title_set)} {article['title']}")
@@ -112,30 +133,5 @@ newspaper_html = f"""
 # Create new PDF
 newspaper_pdf = pydf.generate_pdf(newspaper_html)
 
-# Send to printer via email
-message = EmailMessage()
-message["Subject"] = "Extree! Extree!"
-message["From"] = config.email
-message["To"] = config.subscriber_email
-message.set_content("Latest edition attached!")
-message.add_attachment(newspaper_pdf, maintype="application/pdf", subtype="pdf")
-
-smtp = smtplib.SMTP(f"{config.smtp_server}:{config.smtp_port}")
-smtp.ehlo()
-smtp.starttls()
-smtp.login(config.email, config.password)
-smtp.send_message(message)
-smtp.quit()
-
-# Print directly to the printer with CUPS
-if config.print_direct:
-    pdf_file = "./img/issue.pdf"
-    with open(pdf_file, "wb") as pf:
-        pf.write(newspaper_pdf)
-
-    conn = cups.Connection()
-    conn.printFile(config.printer_name, pdf_file, " ", {"sides":"two-sided-long-edge", "fit-to-page":"1"}) 
-
-# Clean-up temp files
-for f in glob.glob("./img/*"):
-    os.remove(f)
+# Print it!
+send_to_printer(newspaper_pdf)
