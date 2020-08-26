@@ -134,4 +134,4 @@ newspaper_html = f"""
 newspaper_pdf = pydf.generate_pdf(newspaper_html)
 
 # Print it!
-send_to_printer(newspaper_pdf)
+#send_to_printer(newspaper_pdf)
