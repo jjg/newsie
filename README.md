@@ -38,3 +38,5 @@ You may have to do this to get `pip` to install the dependencies:
 Attempting to use latex, you'll need this:
 
 `sudo apt-get install texlive-pictures texlive-science texlive-latex-extra latexmk`
+
+Good example to work from: https://jeltef.github.io/PyLaTeX/current/examples/complex_report.html

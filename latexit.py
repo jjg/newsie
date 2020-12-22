@@ -26,12 +26,12 @@ def send_to_email(newspaper_pdf):
 
 image_filename = os.path.join(os.path.dirname(__file__), "img/0.jpg")
 
-#geometry_options = {"tmargin": "1cm", "lmargin": "10cm"}
-#doc = Document(geometry_options=geometry_options)
+geometry_options = {"tmargin": "1cm", "lmargin": "10cm"}
+doc = Document(geometry_options=geometry_options)
 #cmd = Command(
 #    "documentclass",
 #    options=Options("a3paper", "12pt", 
-doc = Document(documentclass="\\documentclass[paper=a3, fontsize=12pt, parskip=half, DIV=30]{scartcl}]")
+#doc = Document(documentclass="\\documentclass[paper=a3, fontsize=12pt, parskip=half, DIV=30]{scartcl}]")
 
 with doc.create(Section("The fancy stuff")):
     doc.create(Subsection("The subsection"))
