@@ -36,7 +36,7 @@ pytz==2020.5
 PyYAML==3.12
 pyzmq==17.0.0
 qrcode==6.1
-requests==2.14.2
+requests==2.20.0
 simplegeneric==0.8.1
 six==1.14.0
 sqlparse==0.4.1
