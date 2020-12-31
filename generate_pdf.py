@@ -12,7 +12,7 @@ def generate_newspaper_pdf(news, weather):
     geometry_options = {
         "head": "40pt",
         "margin": "0.5in",
-        "bottom": "0.6in",
+        "bottom": "0.4in",
         "includeheadfoot": True
     }
 
@@ -29,7 +29,7 @@ def generate_newspaper_pdf(news, weather):
         with center_header.create(MiniPage(width=NoEscape(r"0.49\textwidth"), pos="c", align="c")) as title_wrapper:
             title_wrapper.append(LargeText(bold("It's Some News!")))
             title_wrapper.append(LineBreak())
-            title_wrapper.append(MediumText(bold(today.strftime("%A, %B %d, %Y"))))
+            title_wrapper.append(SmallText(bold(today.strftime("%A, %B %d, %Y"))))
 
     with first_page.create(Head("L")) as left_header:
         with left_header.create(MiniPage(width=NoEscape(r"0.49\textwidth"), pos="c", align="l")) as weather_wrapper:
@@ -48,6 +48,7 @@ def generate_newspaper_pdf(news, weather):
         for article in news:
             
             article_frame = MiniPage(width=NoEscape(r"0.45\textwidth"), pos='h')
+            # TODO: Figure out how to make the section title smaller
             with article_frame.create(Section(title=article["title"], numbering=False)):
                 article_frame.append(article["summary"])
                 article_frame.append(LineBreak())
