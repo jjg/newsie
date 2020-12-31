@@ -4,7 +4,6 @@ import glob
 import re
 
 import feedparser
-#import pydf
 import qrcode
 import cups
 
@@ -50,12 +49,13 @@ def send_to_printer(newspaper_pdf):
     for f in glob.glob("./img/*"):
         os.remove(f)
 
+def get_weather():
+    # TODO: Get weather from weather station
+    weather = {"temp": 69, "humidity": 10, "pressure": 50}
+    return weather
 
 # Build a list of articles
 articles = []
-
-# Render each article into html
-#column_text = ["",""]
 
 for feed_url in config.subscriber_feeds:
 
@@ -89,16 +89,11 @@ articles.sort(key=lambda x: x.published_parsed, reverse=False)
 article_idx = 0
 selected_articles = []
 # TODO: Select enough articles to fill 2 pages instead of just grabbing a fixed number 
-for article in articles[-20:]:
-
-    # Insert headline
-    # TODO: Replace this variable with a better name
-    #newspaper_body = ""
-    #newspaper_body += f"<h2>{article['title']}</h2>"
-
-    # TODO: Consider grabbing more of the article if the summary is short.
+# TODO: Consider grabbing more of the article if the summary is short.
+for article in articles[-15:]:
 
     # Generate qr code image files
+    article["qr_file"] = os.path.join(os.path.dirname(__file__),  f"img/{article_idx}.jpg")
     qr_link = qrcode.QRCode(
             version = 10,
             box_size = 1,
@@ -107,39 +102,13 @@ for article in articles[-20:]:
     qr_link.add_data(article["link"])
     qr_link.make(fit=False)
     qr_link_img = qr_link.make_image(fill_color="black",back_color="white")
-    qr_link_img.save(f"./img/{article_idx}.jpg", "JPEG")
-
-    # Add path to qr code file
-    article["qr_code"] = f"img/{article_idx}.jpg"
+    qr_link_img.save(article["qr_file"], "JPEG")
 
     selected_articles.append(article)
 
-    # TODO: Full path required here, but find a way to 
-    # avoid hard-coding it.
-    # TODO: Align this better, perhaps alternate left/right?
-    #newspaper_body += f"<img align='left' src='/home/jason/Development/paperboy/img/{article_idx}.jpg'>"
-
-    # Insert summary
-    #newspaper_body += f"<p>{clean_html(article['summary'])}</p>"
-
-    #column_text[(article_idx % 2)] += newspaper_body
-
     article_idx = article_idx + 1
 
-
-# TODO: Make this part of the config
-#paper_title = "The Cyber Gazzette"
-
-#newspaper_html = f"""
-#<table width=100% border=0>
-#   <tr><th colspan=2><h1>{paper_title}</h1></th></tr>
-#   <tr><td>{column_text[0]}</td><td>{column_text[1]}</td></tr>
-#</table>
-#"""
-
-# Create new PDF
-#newspaper_pdf = pydf.generate_pdf(newspaper_html)
-generate_pdf.generate_newspaper_pdf(selected_articles)
+generate_pdf.generate_newspaper_pdf(selected_articles, get_weather())
 
 # Print it!
 #send_to_printer(newspaper_pdf)
