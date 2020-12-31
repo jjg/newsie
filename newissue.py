@@ -4,7 +4,7 @@ import glob
 import re
 
 import feedparser
-import pydf
+#import pydf
 import qrcode
 import cups
 
@@ -12,6 +12,7 @@ from email.message import EmailMessage
 from datetime import datetime, timedelta, timezone
 
 import config
+import generate_pdf
 
 # This gets rid of most HTML w/o resorting to BeautifulSoup (which we might do at some point)
 def clean_html(s):
@@ -54,7 +55,7 @@ def send_to_printer(newspaper_pdf):
 articles = []
 
 # Render each article into html
-column_text = ["",""]
+#column_text = ["",""]
 
 for feed_url in config.subscriber_feeds:
 
@@ -86,17 +87,18 @@ for feed_url in config.subscriber_feeds:
 articles.sort(key=lambda x: x.published_parsed, reverse=False)
 
 article_idx = 0
+selected_articles = []
 # TODO: Select enough articles to fill 2 pages instead of just grabbing a fixed number 
 for article in articles[-20:]:
 
     # Insert headline
     # TODO: Replace this variable with a better name
-    newspaper_body = ""
-    newspaper_body += f"<h2>{article['title']}</h2>"
+    #newspaper_body = ""
+    #newspaper_body += f"<h2>{article['title']}</h2>"
 
     # TODO: Consider grabbing more of the article if the summary is short.
 
-    # Insert QR code link to source
+    # Generate qr code image files
     qr_link = qrcode.QRCode(
             version = 10,
             box_size = 1,
@@ -107,31 +109,37 @@ for article in articles[-20:]:
     qr_link_img = qr_link.make_image(fill_color="black",back_color="white")
     qr_link_img.save(f"./img/{article_idx}.jpg", "JPEG")
 
+    # Add path to qr code file
+    article["qr_code"] = f"img/{article_idx}.jpg"
+
+    selected_articles.append(article)
+
     # TODO: Full path required here, but find a way to 
     # avoid hard-coding it.
     # TODO: Align this better, perhaps alternate left/right?
-    newspaper_body += f"<img align='left' src='/home/jason/Development/paperboy/img/{article_idx}.jpg'>"
+    #newspaper_body += f"<img align='left' src='/home/jason/Development/paperboy/img/{article_idx}.jpg'>"
 
     # Insert summary
-    newspaper_body += f"<p>{clean_html(article['summary'])}</p>"
+    #newspaper_body += f"<p>{clean_html(article['summary'])}</p>"
 
-    column_text[(article_idx % 2)] += newspaper_body
+    #column_text[(article_idx % 2)] += newspaper_body
 
     article_idx = article_idx + 1
 
 
 # TODO: Make this part of the config
-paper_title = "The Cyber Gazzette"
+#paper_title = "The Cyber Gazzette"
 
-newspaper_html = f"""
-<table width=100% border=0>
-   <tr><th colspan=2><h1>{paper_title}</h1></th></tr>
-   <tr><td>{column_text[0]}</td><td>{column_text[1]}</td></tr>
-</table>
-"""
+#newspaper_html = f"""
+#<table width=100% border=0>
+#   <tr><th colspan=2><h1>{paper_title}</h1></th></tr>
+#   <tr><td>{column_text[0]}</td><td>{column_text[1]}</td></tr>
+#</table>
+#"""
 
 # Create new PDF
-newspaper_pdf = pydf.generate_pdf(newspaper_html)
+#newspaper_pdf = pydf.generate_pdf(newspaper_html)
+generate_pdf.generate_newspaper_pdf(selected_articles)
 
 # Print it!
 #send_to_printer(newspaper_pdf)
