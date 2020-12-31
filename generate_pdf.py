@@ -4,7 +4,7 @@ from datetime import date
 from pylatex import Package, Document, PageStyle, Head, Foot, MiniPage, LargeText, MediumText, SmallText, LineBreak, Tabu, Section, StandAloneGraphic
 from pylatex.utils import bold, NoEscape
 
-def generate_newspaper_pdf(news, weather):
+def generate_newspaper_pdf(newspaper_pdf, news, weather):
 
     MAX_ARTICLES = len(news) 
     today = date.today()
@@ -66,4 +66,5 @@ def generate_newspaper_pdf(news, weather):
 
     # TODO: Consider adding a footer
 
+    # TODO: This should be derived from the newspaper_pdf variable
     doc.generate_pdf("newspaper", clean_tex = False)
