@@ -8,7 +8,7 @@ coverage==4.1
 decorator==4.4.2
 dill==0.2.8.2
 Django==3.1.4
-ecdsa==0.13
+ecdsa==0.13.3
 feedparser==5.2.1
 gevent==20.6.2
 greenlet==0.4.16
