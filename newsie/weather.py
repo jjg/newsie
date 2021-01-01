@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 
 from ambient_api.ambientapi import AmbientAPI
 
-import config
+import newsie.config as config
 
 def get_weather():
 

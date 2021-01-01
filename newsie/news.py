@@ -2,7 +2,7 @@ import feedparser
 
 from datetime import datetime, timedelta, timezone
 
-import config
+import newsie.config as config
 
 def get_articles():
     # Build a list of articles

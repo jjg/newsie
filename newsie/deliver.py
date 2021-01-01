@@ -6,7 +6,7 @@ import cups
 
 from email.message import EmailMessage
 
-import config
+import newsie.config as config
 
 def to_email(newspaper_pdf):
     # Send via email

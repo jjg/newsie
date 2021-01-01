@@ -8,11 +8,11 @@ import qrcode
 
 from datetime import datetime, timedelta, timezone
 
-import config
-import deliver
-import news
-import weather
-import generate_pdf
+import newsie.config as config
+import newsie.deliver as deliver
+import newsie.news as news
+import newsie.weather as weather
+import newsie.generate_pdf as generate_pdf
 
 def press():
     # Build a list of articles
