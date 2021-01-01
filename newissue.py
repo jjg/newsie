@@ -42,5 +42,5 @@ newspaper_pdf = "newspaper.pdf"
 generate_pdf.generate_newspaper_pdf(newspaper_pdf, selected_articles, weather.get_weather())
 
 # Print it!
-deliver.to_printer(newspaper_pdf)
+#deliver.to_printer(newspaper_pdf)
 #deliver.to_email(newspaper_pdf)
