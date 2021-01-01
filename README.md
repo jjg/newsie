@@ -61,8 +61,10 @@ Weather uses AmbientWeather.net to get weather data from personal weather statio
 * ~~Only include stories from the last 24 hours (or some configured amount)~~
 * Grab more of the article if the RSS `summary` is too short
 * ~~Figure out why iOS won't parse the QR code links~~
-* Create a CLI
+* ~~Create a CLI~~
 * Add forecast to weather
 * Make story titles smaller than header
+* Re-work configuration (module-based is broken now that we're a real package)
+* Fix path issues that have come-up as a result of packagification
 
 ## Notes
