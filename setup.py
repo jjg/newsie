@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="newsie",
-    version="0.0.2",
+    version="0.0.3",
     description="How about a daily printed newspaper, govna!",
     long_description=long_description,
     long_description_content_type="text/markdown",
