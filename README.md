@@ -28,7 +28,7 @@ You'll need to install a LaTex compiler, something along these lines:
 
 ### Installation
 
-~~`pip install newsie`~~
+`pip install newsie`
 
 ... or to install from source, clone this repository and then...
 
