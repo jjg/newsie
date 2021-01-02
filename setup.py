@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="newsie",
-    version="0.0.5",
+    version="0.0.6",
     description="How about a daily printed newspaper, govna!",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -16,7 +16,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "ambient-api",
-        "cups",
+        "pycups",
         "feedparser",
         "image",
         "PyLaTeX",

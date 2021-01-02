@@ -27,13 +27,9 @@ def to_email(newspaper_pdf):
 
 def to_printer(newspaper_pdf):
     # Print directly to the printer with CUPS
-    if config.print_direct:
-        pdf_file = newspaper_pdf 
-        with open(pdf_file, "wb") as pf:
-            pf.write(newspaper_pdf)
-
-        conn = cups.Connection()
-        conn.printFile(config.printer_name, pdf_file, " ", {"sides":"two-sided-long-edge", "fit-to-page":"1"}) 
+    pdf_file = f"{newspaper_pdf}.pdf" 
+    conn = cups.Connection()
+    conn.printFile(config.printer_name, pdf_file, " ", {"sides":"two-sided-long-edge", "fit-to-page":"1"}) 
 
     # TODO: Should this happen somewhere more global?
     # Clean-up temp files
