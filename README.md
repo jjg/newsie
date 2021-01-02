@@ -5,7 +5,7 @@ How about a daily printed newspaper, govna?
 
 ## Description
 
-Paperboy delivers a fresh hard-copy newspaper via your printer every morning based on the news sources you select.  Each article includes a summary and a QR code you can scan with your phone shoud you *want to know more*.
+Newsie delivers a fresh hard-copy newspaper via your printer every morning based on the news sources you select.  Each article includes a summary and a QR code you can scan with your phone shoud you *want to know more*.
 
 
 ## Status
@@ -16,41 +16,30 @@ Paperboy delivers a fresh hard-copy newspaper via your printer every morning bas
 * Blocks stories based on keywords
 
 
-## Requirements
+## Usage
+
+Once installed and configured, the command `new-issue` will email and print a new issue of the paper.
+
+### Requirements
 
 You'll need to install a LaTex compiler, something along these lines:
 
 `sudo apt-get install texlive-pictures texlive-science texlive-latex-extra latexmk`
 
-Then install the required Python modules:
+### Installation
 
-`pip install -r requirements.txt` 
+~~`pip install newsie`~~
 
-## Configuration
+... or to install from source, clone this repository and then...
 
-### Common
+`pip install .`
 
-* `subscriber_email`: Email address used to send the paper (PDF) to
-* `smtp_server`: Mailserver used to send newspaper PDF
-* `smtp_port`: SMTP port number of mailserver
-* `email`: Email/username for SMTP server
-* `password`: Mailserver password
-* `print_direct`: Boolean, enables or disabled CUPS-based printing
-* `printer_name`: Name of CUPS printer to use if direct printing is enabled
+### Configuration
 
-### News
+Copy [config_template.ini](./config_template.ini) to `config.ini` and modify the configuration as needed.
 
-* `subscriber_feeds`: A list of URL's to RSS feeds to include in the news
-* `subscriber_blocklist`: A list of words used to block unwanted stories
+*NOTE: Make sure the paths in the configuration file actually exist!"*
 
-### Weather
-
-Weather uses AmbientWeather.net to get weather data from personal weather stations.  Currently this requires having a compatible station and creating an application and api key on ambientweather.net.  In the future other weather sources may be supported.
-
-* `AMBIENT_ENDPOINT`: The URL of the Ambient Weather API
-* `AMBIENT_APPLICATION_KEY`: The application key
-* `AMBIENT_API_KEY`: The API key
- 
 
 ## TODO
 
@@ -63,8 +52,11 @@ Weather uses AmbientWeather.net to get weather data from personal weather statio
 * ~~Figure out why iOS won't parse the QR code links~~
 * ~~Create a CLI~~
 * Add forecast to weather
+* Support other weather providers
 * Make story titles smaller than header
-* Re-work configuration (module-based is broken now that we're a real package)
-* Fix path issues that have come-up as a result of packagification
-
-## Notes
+* ~~Re-work configuration (module-based is broken now that we're a real package)~~
+* ~~Fix path issues that have come-up as a result of packagification~~
+* Create qr image directory if it's missing
+* Better output (remove debugging code, etc.)
+* Fix "first page is blank" problem
+* Make number of articles configurable
