@@ -67,4 +67,4 @@ def generate_newspaper_pdf(newspaper_pdf, news, weather):
     # TODO: Consider adding a footer
 
     # TODO: This should be derived from the newspaper_pdf variable
-    doc.generate_pdf("newspaper", clean_tex = False)
+    doc.generate_pdf(newspaper_pdf, clean_tex = False)

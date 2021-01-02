@@ -16,7 +16,7 @@ def to_email(newspaper_pdf):
     message["To"] = config.subscriber_email
     message.set_content("Latest edition attached!")
     
-    message.add_attachment(open(newspaper_pdf,mode="rb").read(), maintype="application/pdf", subtype="pdf")
+    message.add_attachment(open(f"{newspaper_pdf}.pdf",mode="rb").read(), maintype="application/pdf", subtype="pdf")
 
     smtp = smtplib.SMTP(f"{config.smtp_server}:{config.smtp_port}")
     smtp.ehlo()
