@@ -45,7 +45,7 @@ Copy [config_template.ini](./config_template.ini) to `config.ini` and modify the
 
 * ~~Make the feed list dynamic (part of the config)~~
 * Add a tool to automate configuration
-* Fix encoding/unicode issues (ex:, the `'` in `it's` getting turned into weird characters).
+* Fix encoding/unicode issues (ex:, the `'` in `it's` getting turned into weird characters)
 * ~~Blend stories so they don't appear grouped by source~~
 * ~~Only include stories from the last 24 hours (or some configured amount)~~
 * Grab more of the article if the RSS `summary` is too short
@@ -60,3 +60,4 @@ Copy [config_template.ini](./config_template.ini) to `config.ini` and modify the
 * Better output (remove debugging code, etc.)
 * Fix "first page is blank" problem
 * Make number of articles configurable
+* Test to make sure all RSS feeds in the config are being used
